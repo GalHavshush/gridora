@@ -2,7 +2,12 @@
 
 **Your web, arranged your way.**
 
+> [!WARNING]
+> **Gridora is a work in progress.** It's early and changing quickly, so expect bugs, rough edges and breaking changes between versions, including to the saved dashboard format. Found a problem? [Open an issue](https://github.com/GalHavshush/gridora/issues). Bug reports are very welcome.
+
 Gridora is an open-source, widget-based personal homepage, a modern spiritual successor to iGoogle. Arrange clocks, weather, notes, bookmarks, feeds and search on a full-screen snapping grid. Drag, resize and restyle everything; it all stays in your browser.
+
+![The Gridora dashboard with clock, search, bookmarks, weather, notes and RSS widgets on a gradient background](docs/screenshots/dashboard.jpg)
 
 - **Snapping 12-column grid:** widgets always land on grid cells. They never float freely.
 - **Edit mode:** drag to move, pull a corner to resize, remove or configure widgets, and see the cell grid while you arrange.
@@ -10,6 +15,24 @@ Gridora is an open-source, widget-based personal homepage, a modern spiritual su
 - **Multiple instances:** add two clocks in different time zones, three feeds, or as many notes as you like.
 - **Backgrounds:** gradients, solid colors or wallpaper images, with glass, light or dark widget cards.
 - **No backend:** it's a static site. The layout is saved to `localStorage` and can be exported or imported as JSON.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/edit-mode.jpg" alt="Edit mode: a widget being dragged over the visible cell grid, with remove, settings and resize controls on every widget" /><br /><sub><b>Edit mode.</b> Drag, resize and snap to the cell grid.</sub></td>
+    <td width="50%"><img src="docs/screenshots/widget-library.jpg" alt="The widget library listing Bookmarks, Clock, Notes, RSS Feed, Search and Weather" /><br /><sub><b>Widget library.</b> Generated from the widget registry.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/customize.jpg" alt="The Customize drawer with gradient, solid color and wallpaper backgrounds and widget styles" /><br /><sub><b>Customize.</b> Gradients, colors, wallpapers and card styles.</sub></td>
+    <td width="50%"><img src="docs/screenshots/light-theme.jpg" alt="The dashboard on a light pastel background with dark text" /><br /><sub><b>Light backgrounds.</b> Widgets adapt their text color automatically.</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/screenshots/mobile.jpg" width="300" alt="Gridora on a phone, with widgets stacked in a single column" /><br />
+  <sub><b>Small screens.</b> Widgets stack into one column.</sub>
+</p>
 
 ## Quick start
 
