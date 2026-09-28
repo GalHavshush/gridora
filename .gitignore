@@ -29,3 +29,6 @@ dist-ssr
 !.env.example
 .claude/
 .vercel
+
+# Launch video renders
+brag-output*/
