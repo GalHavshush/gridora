@@ -7,7 +7,9 @@
 
 Gridora is an open-source, widget-based personal homepage, a modern spiritual successor to iGoogle. Arrange clocks, weather, notes, bookmarks, feeds and search on a full-screen snapping grid. Drag, resize and restyle everything; it all stays in your browser.
 
-![The Gridora dashboard with clock, search, bookmarks, weather, notes and RSS widgets on a gradient background](docs/screenshots/dashboard.jpg)
+<a href="https://gridora-six.vercel.app"><img src="docs/brag.webp" alt="Gridora launch video: widgets pop onto the grid, a widget is dragged and resized while the layout reflows, the background changes, and a widget manifest is written" /></a>
+
+<p align="center"><a href="https://gridora-six.vercel.app"><b>Try the live demo →</b></a></p>
 
 - **Snapping 12-column grid:** widgets always land on grid cells. They never float freely.
 - **Edit mode:** drag to move, pull a corner to resize, remove or configure widgets, and see the cell grid while you arrange.
@@ -17,6 +19,8 @@ Gridora is an open-source, widget-based personal homepage, a modern spiritual su
 - **No backend:** it's a static site. The layout is saved to `localStorage` and can be exported or imported as JSON.
 
 ## Screenshots
+
+![The Gridora dashboard with clock, search, bookmarks, weather, notes and RSS widgets on a gradient background](docs/screenshots/dashboard.jpg)
 
 <table>
   <tr>
