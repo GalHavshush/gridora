@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+@import 'react-grid-layout/css/styles.css';
+
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Geist', ui-sans-serif, sans-serif;
+  --color-accent: #ff7a6b;
+  --color-accent-soft: #ffb86b;
+  --color-chrome: rgb(19 16 34 / 0.78);
+}
+
+/* Widget colors come from the chosen card style + background tone, so widgets
+   written with `text-fg`, `text-muted`, `bg-subtle`, `border-line` adapt automatically. */
+@theme inline {
+  --color-fg: var(--card-fg);
+  --color-muted: var(--card-muted);
+  --color-subtle: var(--card-subtle);
+  --color-line: var(--card-line);
+}
+
+@utility bg-accent-gradient {
+  background-image: linear-gradient(135deg, var(--color-accent-soft), #ff5f8f);
+}
+
+@utility chrome-surface {
+  background: var(--color-chrome);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  backdrop-filter: blur(24px) saturate(160%);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.06) inset,
+    0 20px 50px -20px rgb(0 0 0 / 0.55);
+}
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  --card-blur: 0px;
+}
+
+body {
+  margin: 0;
+  background: #15122b;
+  color: white;
+}
+
+[data-card='glass'] {
+  --card-bg: rgb(255 255 255 / 0.1);
+  --card-fg: #fff;
+  --card-muted: rgb(255 255 255 / 0.64);
+  --card-subtle: rgb(255 255 255 / 0.09);
+  --card-line: rgb(255 255 255 / 0.16);
+  --card-blur: 28px;
+  --card-shadow: 0 1px 0 rgb(255 255 255 / 0.12) inset, 0 24px 48px -24px rgb(0 0 0 / 0.5);
+}
+[data-card='glass'][data-tone='light'] {
+  --card-bg: rgb(255 255 255 / 0.5);
+  --card-fg: #1a1726;
+  --card-muted: rgb(26 23 38 / 0.58);
+  --card-subtle: rgb(26 23 38 / 0.06);
+  --card-line: rgb(255 255 255 / 0.7);
+  --card-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 40px -24px rgb(40 30 80 / 0.35);
+}
+[data-card='light'] {
+  --card-bg: rgb(255 255 255 / 0.94);
+  --card-fg: #1a1726;
+  --card-muted: rgb(26 23 38 / 0.56);
+  --card-subtle: rgb(26 23 38 / 0.055);
+  --card-line: rgb(26 23 38 / 0.08);
+  --card-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.45);
+}
+[data-card='dark'] {
+  --card-bg: rgb(20 18 32 / 0.9);
+  --card-fg: #f4f2fb;
+  --card-muted: rgb(244 242 251 / 0.56);
+  --card-subtle: rgb(255 255 255 / 0.06);
+  --card-line: rgb(255 255 255 / 0.08);
+  --card-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.6);
+}
+
+.widget-card {
+  background: var(--card-bg);
+  color: var(--card-fg);
+  border: 1px solid var(--card-line);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(var(--card-blur)) saturate(170%);
+}
+
+/* ---- react-grid-layout ------------------------------------------------ */
+
+.react-grid-item.react-grid-placeholder {
+  background: rgb(255 255 255 / 0.1);
+  border: 2px dashed rgb(255 255 255 / 0.55);
+  border-radius: 26px;
+  opacity: 1;
+}
+[data-tone='light'] .react-grid-item.react-grid-placeholder {
+  background: rgb(26 23 38 / 0.06);
+  border-color: rgb(26 23 38 / 0.35);
+}
+
+.react-grid-item.react-draggable-dragging .widget-card {
+  transform: scale(1.025) rotate(-0.4deg);
+  box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.65);
+}
+
+.react-grid-item > .react-resizable-handle {
+  width: 28px;
+  height: 28px;
+  opacity: 1;
+  z-index: 5;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-se::after {
+  right: 7px;
+  bottom: 7px;
+  width: 12px;
+  height: 12px;
+  border-right: 3px solid white;
+  border-bottom: 3px solid white;
+  border-bottom-right-radius: 8px;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.5));
+}
+
+/* Fade grid transitions a little softer than the library default. */
+.react-grid-item.cssTransforms {
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-grid-item.cssTransforms {
+    transition: none;
+  }
+}
+
+/* Text drawn straight on the background (logo, empty state) follows the background tone. */
+:root {
+  --page-fg: #fff;
+  --page-muted: rgb(255 255 255 / 0.7);
+}
+[data-tone='light'] {
+  --page-fg: #1a1726;
+  --page-muted: rgb(26 23 38 / 0.62);
+}
+@theme inline {
+  --color-page: var(--page-fg);
+  --color-page-muted: var(--page-muted);
+}
