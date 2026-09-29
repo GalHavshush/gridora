@@ -5,7 +5,7 @@ import { Background } from '@/components/Background'
 import { LogoMark } from '@/components/Logo'
 import { Toolbar } from '@/components/Toolbar'
 import { useDashboard } from '@/store/dashboardStore'
-import { appearanceVars } from '@/themes/appearance'
+import { appearanceVars, cardTokens } from '@/themes/appearance'
 import { CustomizePanel } from './CustomizePanel'
 import { SettingsPanel } from './SettingsPanel'
 import { WidgetGrid } from './WidgetGrid'
@@ -21,6 +21,7 @@ export function Dashboard() {
   const tone = useDashboard((s) => s.background.tone)
   const cardOpacity = useDashboard((s) => s.cardOpacity)
   const cardBlur = useDashboard((s) => s.cardBlur)
+  const cardColor = useDashboard((s) => s.cardColor)
   const font = useDashboard((s) => s.font)
   const accent = useDashboard((s) => s.accent)
   const addWidget = useDashboard((s) => s.addWidget)
@@ -48,10 +49,10 @@ export function Dashboard() {
 
   return (
     <div
-      data-card={cardStyle}
+      data-card={cardTokens(cardStyle, cardColor)}
       data-tone={tone}
       className="min-h-dvh"
-      style={appearanceVars({ cardStyle, tone, cardOpacity, cardBlur, font, accent })}
+      style={appearanceVars({ cardStyle, tone, cardOpacity, cardBlur, cardColor, font, accent })}
     >
       <Background />
       <Toolbar

@@ -33,14 +33,15 @@ describe('parseSnapshot backgrounds', () => {
 
 describe('parseSnapshot appearance', () => {
   it('keeps valid appearance values and frameless widgets', () => {
-    const input = { widgets: [{ ...widget('a'), frameless: true }], cardOpacity: 42, cardBlur: 12, font: 'serif', accent: '#5ee6b8', wallpaperDim: 30 }
+    const input = { widgets: [{ ...widget('a'), frameless: true }], cardOpacity: 42, cardBlur: 12, cardColor: '#26332b', font: 'serif', accent: '#5ee6b8', wallpaperDim: 30, recentWallpapers: ['https://a.test/1.jpg', 'https://a.test/1.jpg', 'javascript:alert(1)', 'https://a.test/2.jpg'] }
     const result = parseSnapshot(input)
-    expect(result).toMatchObject({ cardOpacity: 42, cardBlur: 12, font: 'serif', accent: '#5ee6b8', wallpaperDim: 30 })
+    expect(result).toMatchObject({ cardOpacity: 42, cardBlur: 12, cardColor: '#26332b', font: 'serif', accent: '#5ee6b8', wallpaperDim: 30 })
     expect(result.widgets[0].frameless).toBe(true)
+    expect(result.recentWallpapers).toEqual(['https://a.test/1.jpg', 'https://a.test/2.jpg'])
   })
 
   it('falls back to defaults for invalid appearance values', () => {
-    const result = parseSnapshot({ widgets: [], cardOpacity: 140, cardBlur: -1, font: 'comic', accent: 'red;x:y', wallpaperDim: 99 })
-    expect(result).toMatchObject({ cardOpacity: null, cardBlur: null, font: 'grotesk', accent: '#ff7a6b', wallpaperDim: 0 })
+    const result = parseSnapshot({ widgets: [], cardOpacity: 140, cardBlur: -1, cardColor: 'blue', font: 'comic', accent: 'red;x:y', wallpaperDim: 99 })
+    expect(result).toMatchObject({ cardOpacity: null, cardBlur: null, cardColor: null, font: 'grotesk', accent: '#ff7a6b', wallpaperDim: 0 })
   })
 })

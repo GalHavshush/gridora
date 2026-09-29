@@ -22,10 +22,14 @@ export interface DashboardSnapshot {
   cardOpacity: number | null
   /** Card blur in px, 0–40. `null` follows the card style's default. */
   cardBlur: number | null
+  /** Card surface color. `null` uses the card style's own color. */
+  cardColor: string | null
   font: FontId
   accent: string
   /** Darkens image wallpapers, 0–80. */
   wallpaperDim: number
+  /** Image URLs the user applied as wallpapers, newest first, at most 4. */
+  recentWallpapers: string[]
 }
 
 export const snapshotOf = (s: DashboardSnapshot): DashboardSnapshot => ({
@@ -34,12 +38,15 @@ export const snapshotOf = (s: DashboardSnapshot): DashboardSnapshot => ({
   cardStyle: s.cardStyle,
   cardOpacity: s.cardOpacity,
   cardBlur: s.cardBlur,
+  cardColor: s.cardColor,
   font: s.font,
   accent: s.accent,
   wallpaperDim: s.wallpaperDim,
+  recentWallpapers: s.recentWallpapers,
 })
 
 const isNumber = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
+const isHex = (v: unknown): v is string => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)
 const inRange = (v: unknown, max: number): v is number => isNumber(v) && v >= 0 && v <= max
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
@@ -75,8 +82,12 @@ export function parseSnapshot(data: unknown): DashboardSnapshot {
     cardStyle,
     cardOpacity: inRange(data.cardOpacity, 100) ? data.cardOpacity : null,
     cardBlur: inRange(data.cardBlur, 40) ? data.cardBlur : null,
+    cardColor: isHex(data.cardColor) ? data.cardColor : null,
     font: fonts.some((f) => f.id === data.font) ? (data.font as FontId) : 'grotesk',
-    accent: typeof data.accent === 'string' && /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : defaultAccent,
+    accent: isHex(data.accent) ? data.accent : defaultAccent,
     wallpaperDim: inRange(data.wallpaperDim, 80) ? data.wallpaperDim : 0,
+    recentWallpapers: Array.isArray(data.recentWallpapers)
+      ? [...new Set(data.recentWallpapers.filter((u): u is string => typeof u === 'string' && Boolean(safeUrl(u))))].slice(0, 4)
+      : [],
   }
 }

@@ -19,8 +19,11 @@ interface DashboardState extends DashboardSnapshot {
   setEditing: (isEditing: boolean) => void
   setBackground: (background: Background) => void
   setCardStyle: (cardStyle: CardStyle) => void
-  setAppearance: (patch: Partial<Pick<DashboardSnapshot, 'cardOpacity' | 'cardBlur' | 'font' | 'accent' | 'wallpaperDim'>>) => void
+  setAppearance: (patch: Partial<Pick<DashboardSnapshot, 'cardOpacity' | 'cardBlur' | 'cardColor' | 'font' | 'accent' | 'wallpaperDim'>>) => void
   setFrameless: (id: string, frameless: boolean) => void
+  /** Sets an image URL as the wallpaper and remembers it among the recent ones. */
+  applyWallpaperUrl: (url: string) => void
+  removeRecentWallpaper: (url: string) => void
   importDashboard: (data: unknown) => void
   resetDashboard: () => void
 }
@@ -33,9 +36,11 @@ const defaultSnapshot = (): DashboardSnapshot => ({
   cardStyle: 'glass',
   cardOpacity: null,
   cardBlur: null,
+  cardColor: null,
   font: 'grotesk',
   accent: defaultAccent,
   wallpaperDim: 0,
+  recentWallpapers: [],
 })
 
 export const useDashboard = create<DashboardState>()(
@@ -79,6 +84,12 @@ export const useDashboard = create<DashboardState>()(
       // A new style starts from its own opacity and blur rather than the previous style's.
       setCardStyle: (cardStyle) => set({ cardStyle, cardOpacity: null, cardBlur: null }),
       setAppearance: (patch) => set(patch),
+      applyWallpaperUrl: (url) =>
+        set((s) => ({
+          background: { type: 'image', value: url, tone: 'dark' },
+          recentWallpapers: [url, ...s.recentWallpapers.filter((u) => u !== url)].slice(0, 4),
+        })),
+      removeRecentWallpaper: (url) => set((s) => ({ recentWallpapers: s.recentWallpapers.filter((u) => u !== url) })),
       setFrameless: (id, frameless) =>
         set((s) => ({ widgets: s.widgets.map((w) => (w.id === id ? { ...w, frameless } : w)) })),
 

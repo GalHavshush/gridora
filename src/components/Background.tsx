@@ -17,7 +17,7 @@ export function Background() {
   const background = useDashboard((s) => s.background)
   const dim = useDashboard((s) => s.wallpaperDim)
   return (
-    <div className="fixed inset-0 -z-10 bg-[#15122b]" aria-hidden="true">
+    <div className="fixed inset-0 -z-10 bg-[#141416]" aria-hidden="true">
       <AnimatePresence initial={false}>
         <motion.div
           key={background.type + background.value}

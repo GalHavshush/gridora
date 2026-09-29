@@ -115,7 +115,7 @@ function EditButton({
       aria-label={label}
       title={label}
       className={cx(
-        'no-drag absolute z-10 grid size-7 cursor-pointer place-items-center rounded-full bg-white text-[#1a1726] shadow-lg shadow-black/30 transition hover:scale-110',
+        'no-drag absolute z-10 grid size-7 cursor-pointer place-items-center rounded-full bg-white text-[#18181b] shadow-lg shadow-black/30 transition hover:scale-110',
         className,
       )}
     >

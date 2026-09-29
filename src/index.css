@@ -6,7 +6,7 @@
   --font-display: 'Bricolage Grotesque', 'Geist', ui-sans-serif, sans-serif;
   --color-accent: #ff7a6b;
   --color-accent-fg: #2a0f1c;
-  --color-chrome: rgb(19 16 34 / 0.78);
+  --color-chrome: rgb(20 20 22 / 0.78);
 }
 
 /* Widget colors come from the chosen card style + background tone, so widgets
@@ -43,7 +43,7 @@
 
 body {
   margin: 0;
-  background: #15122b;
+  background: #141416;
   color: white;
 }
 
@@ -56,24 +56,24 @@ body {
   --card-shadow: 0 1px 0 rgb(255 255 255 / 0.12) inset, 0 24px 48px -24px rgb(0 0 0 / 0.5);
 }
 [data-card='glass'][data-tone='light'] {
-  --card-fg: #1a1726;
-  --card-muted: rgb(26 23 38 / 0.58);
-  --card-subtle: rgb(26 23 38 / 0.06);
+  --card-fg: #18181b;
+  --card-muted: rgb(24 24 27 / 0.58);
+  --card-subtle: rgb(24 24 27 / 0.06);
   --card-line: rgb(255 255 255 / 0.7);
-  --card-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 40px -24px rgb(40 30 80 / 0.35);
+  --card-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 40px -24px rgb(0 0 0 / 0.2);
 }
 [data-card='light'] {
   --card-rgb: 255 255 255;
-  --card-fg: #1a1726;
-  --card-muted: rgb(26 23 38 / 0.56);
-  --card-subtle: rgb(26 23 38 / 0.055);
-  --card-line: rgb(26 23 38 / 0.08);
+  --card-fg: #18181b;
+  --card-muted: rgb(24 24 27 / 0.56);
+  --card-subtle: rgb(24 24 27 / 0.055);
+  --card-line: rgb(24 24 27 / 0.08);
   --card-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.45);
 }
 [data-card='dark'] {
-  --card-rgb: 20 18 32;
-  --card-fg: #f4f2fb;
-  --card-muted: rgb(244 242 251 / 0.56);
+  --card-rgb: 22 22 25;
+  --card-fg: #f4f4f5;
+  --card-muted: rgb(244 244 245 / 0.56);
   --card-subtle: rgb(255 255 255 / 0.06);
   --card-line: rgb(255 255 255 / 0.08);
   --card-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.6);
@@ -113,8 +113,8 @@ body {
   opacity: 1;
 }
 [data-tone='light'] .react-grid-item.react-grid-placeholder {
-  background: rgb(26 23 38 / 0.06);
-  border-color: rgb(26 23 38 / 0.35);
+  background: rgb(24 24 27 / 0.06);
+  border-color: rgb(24 24 27 / 0.35);
 }
 
 .react-grid-item.react-draggable-dragging .widget-card {
@@ -157,8 +157,8 @@ body {
   --page-muted: rgb(255 255 255 / 0.7);
 }
 [data-tone='light'] {
-  --page-fg: #1a1726;
-  --page-muted: rgb(26 23 38 / 0.62);
+  --page-fg: #18181b;
+  --page-muted: rgb(24 24 27 / 0.62);
 }
 @theme inline {
   --color-page: var(--page-fg);

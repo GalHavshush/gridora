@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { Check, Pipette } from 'lucide-react'
+import { Check, Pipette, RotateCcw, X } from 'lucide-react'
 import { inputClass } from '@/components/SettingField'
 import { Sheet, SheetSection } from '@/components/Sheet'
 import { useDashboard } from '@/store/dashboardStore'
@@ -13,19 +13,29 @@ import {
   type Background,
   type CardStyle,
 } from '@/themes/backgrounds'
-import { accents, cardDefaults, fonts } from '@/themes/appearance'
+import { accents, cardColors, cardDefaults, cardTokens, fonts, rgbChannels } from '@/themes/appearance'
 import { cx } from '@/lib/cx'
-import { cssUrl } from '@/lib/url'
+import { cssUrl, safeUrl } from '@/lib/url'
 
 export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const background = useDashboard((s) => s.background)
   const setBackground = useDashboard((s) => s.setBackground)
   const cardStyle = useDashboard((s) => s.cardStyle)
   const setCardStyle = useDashboard((s) => s.setCardStyle)
-  const { cardOpacity, cardBlur, font, accent, wallpaperDim } = useDashboard(
-    useShallow((s) => ({ cardOpacity: s.cardOpacity, cardBlur: s.cardBlur, font: s.font, accent: s.accent, wallpaperDim: s.wallpaperDim })),
+  const { cardOpacity, cardBlur, cardColor, font, accent, wallpaperDim } = useDashboard(
+    useShallow((s) => ({
+      cardOpacity: s.cardOpacity,
+      cardBlur: s.cardBlur,
+      cardColor: s.cardColor,
+      font: s.font,
+      accent: s.accent,
+      wallpaperDim: s.wallpaperDim,
+    })),
   )
   const setAppearance = useDashboard((s) => s.setAppearance)
+  const recentWallpapers = useDashboard((s) => s.recentWallpapers)
+  const applyWallpaperUrl = useDashboard((s) => s.applyWallpaperUrl)
+  const removeRecentWallpaper = useDashboard((s) => s.removeRecentWallpaper)
   const [imageUrl, setImageUrl] = useState('')
 
   const isActive = (b: Background) => b.type === background.type && b.value === background.value
@@ -33,6 +43,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
   const imageUrlValid = /^https?:\/\/\S+$/.test(imageUrl.trim())
   const defaults = cardDefaults(cardStyle, background.tone)
   const isCustomAccent = !accents.some((a) => a.value === accent)
+  const isCustomCardColor = cardColor !== null && !cardColors.some((c) => c.value === cardColor)
 
   return (
     <Sheet open={open} onClose={onClose} title="Customize" description="Make Gridora feel like yours.">
@@ -57,7 +68,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
               style={{ background: preset.value }}
               className={cx(
                 'size-10 cursor-pointer rounded-full border border-white/15 transition hover:scale-105',
-                isActive(preset) && 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1726]',
+                isActive(preset) && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
               )}
             />
           ))}
@@ -65,7 +76,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
             title="Custom color"
             className={cx(
               'relative grid size-10 cursor-pointer place-items-center rounded-full border border-dashed border-white/30 text-white/70 transition hover:scale-105',
-              isCustomColor && 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1726]',
+              isCustomColor && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
             )}
             style={isCustomColor ? { background: background.value } : undefined}
           >
@@ -74,7 +85,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
               type="color"
               aria-label="Custom color"
               className="absolute inset-0 cursor-pointer opacity-0"
-              value={isCustomColor ? background.value : '#15122b'}
+              value={isCustomColor ? background.value : '#141416'}
               onChange={(e) => setBackground({ type: 'solid', value: e.target.value, tone: toneForColor(e.target.value) })}
             />
           </label>
@@ -93,13 +104,31 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
               />
             </Swatch>
           ))}
+          {recentWallpapers.map((url) => {
+            const wallpaper: Background = { type: 'image', value: url, tone: 'dark' }
+            return (
+              <div key={url} className="relative">
+                <Swatch label={hostLabel(url)} active={isActive(wallpaper)} onClick={() => setBackground(wallpaper)}>
+                  <img src={url} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
+                </Swatch>
+                <button
+                  onClick={() => removeRecentWallpaper(url)}
+                  aria-label={`Remove ${hostLabel(url)} wallpaper`}
+                  title="Remove from saved wallpapers"
+                  className="absolute top-1.5 right-1.5 grid size-6 cursor-pointer place-items-center rounded-full bg-black/55 text-white/85 backdrop-blur-sm transition hover:bg-black/75 hover:text-white"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            )
+          })}
         </div>
         <form
           className="mt-3 flex gap-2"
           onSubmit={(e) => {
             e.preventDefault()
             if (!imageUrlValid) return
-            setBackground({ type: 'image', value: imageUrl.trim(), tone: 'dark' })
+            applyWallpaperUrl(imageUrl.trim())
             setImageUrl('')
           }}
         >
@@ -113,7 +142,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
           />
           <button
             disabled={!imageUrlValid}
-            className="shrink-0 cursor-pointer rounded-xl bg-white px-4 text-sm font-medium text-[#1a1726] transition disabled:cursor-default disabled:opacity-30"
+            className="shrink-0 cursor-pointer rounded-xl bg-white px-4 text-sm font-medium text-[#18181b] transition disabled:cursor-default disabled:opacity-30"
           >
             Apply
           </button>
@@ -142,6 +171,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
               <CardPreview
                 style={style.value}
                 background={background}
+                color={cardColor}
                 {...(cardStyle === style.value ? { opacity: cardOpacity, blur: cardBlur } : {})}
               />
               <div className="mt-2 px-1 text-sm font-medium">{style.name}</div>
@@ -157,6 +187,52 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
           unit="px"
           onChange={(v) => setAppearance({ cardBlur: v })}
         />
+        <div className="mt-4 text-sm font-medium text-white/90">Card color</div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            title="Style color"
+            aria-label="Style color"
+            aria-pressed={cardColor === null}
+            onClick={() => setAppearance({ cardColor: null })}
+            className={cx(
+              'grid size-10 cursor-pointer place-items-center rounded-full border border-white/30 text-white/70 transition hover:scale-105',
+              cardColor === null && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
+            )}
+          >
+            <RotateCcw className="size-4" />
+          </button>
+          {cardColors.map((c) => (
+            <button
+              key={c.value}
+              title={c.name}
+              aria-label={c.name}
+              aria-pressed={cardColor === c.value}
+              onClick={() => setAppearance({ cardColor: c.value })}
+              style={{ background: c.value }}
+              className={cx(
+                'size-10 cursor-pointer rounded-full border border-white/15 transition hover:scale-105',
+                cardColor === c.value && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
+              )}
+            />
+          ))}
+          <label
+            title="Custom card color"
+            className={cx(
+              'relative grid size-10 cursor-pointer place-items-center rounded-full border border-dashed border-white/30 text-white/70 transition hover:scale-105',
+              isCustomCardColor && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
+            )}
+            style={isCustomCardColor ? { background: cardColor } : undefined}
+          >
+            <Pipette className="size-4" />
+            <input
+              type="color"
+              aria-label="Custom card color"
+              className="absolute inset-0 cursor-pointer opacity-0"
+              value={cardColor ?? '#232326'}
+              onChange={(e) => setAppearance({ cardColor: e.target.value })}
+            />
+          </label>
+        </div>
       </SheetSection>
 
       <SheetSection title="Typeface">
@@ -194,7 +270,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
               style={{ background: a.value }}
               className={cx(
                 'size-10 cursor-pointer rounded-full border border-white/15 transition hover:scale-105',
-                accent === a.value && 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1726]',
+                accent === a.value && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
               )}
             />
           ))}
@@ -202,7 +278,7 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
             title="Custom accent"
             className={cx(
               'relative grid size-10 cursor-pointer place-items-center rounded-full border border-dashed border-white/30 text-white/70 transition hover:scale-105',
-              isCustomAccent && 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1726]',
+              isCustomAccent && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
             )}
             style={isCustomAccent ? { background: accent } : undefined}
           >
@@ -221,6 +297,8 @@ export function CustomizePanel({ open, onClose }: { open: boolean; onClose: () =
   )
 }
 
+const hostLabel = (url: string) => safeUrl(url)?.hostname.replace(/^www\./, '') ?? 'Custom'
+
 function Swatch({
   label,
   active,
@@ -238,8 +316,8 @@ function Swatch({
       aria-label={label}
       aria-pressed={active}
       className={cx(
-        'group relative aspect-[16/10] cursor-pointer overflow-hidden rounded-xl border border-white/10 transition hover:scale-[1.03]',
-        active && 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1726]',
+        'group relative aspect-[16/10] w-full cursor-pointer overflow-hidden rounded-xl border border-white/10 transition hover:scale-[1.03]',
+        active && 'ring-2 ring-white ring-offset-2 ring-offset-[#18181b]',
       )}
     >
       {children}
@@ -289,20 +367,26 @@ function Slider({
 function CardPreview({
   style,
   background,
+  color,
   opacity,
   blur,
 }: {
   style: CardStyle
   background: Background
+  color: string | null
   opacity?: number | null
   blur?: number | null
 }) {
   const defaults = cardDefaults(style, background.tone)
   const bg = background.type === 'image' ? { background: `center/cover ${cssUrl(background.value)}` } : { background: background.value }
-  const vars = { '--card-alpha': (opacity ?? defaults.opacity) / 100, '--card-blur': `${blur ?? defaults.blur}px` } as React.CSSProperties
+  const vars = {
+    '--card-alpha': (opacity ?? defaults.opacity) / 100,
+    '--card-blur': `${blur ?? defaults.blur}px`,
+    ...(color && { '--card-rgb': rgbChannels(color) }),
+  } as React.CSSProperties
   return (
     <div
-      data-card={style}
+      data-card={cardTokens(style, color)}
       data-tone={background.tone}
       className="relative h-14 overflow-hidden rounded-xl"
       style={{ ...bg, ...vars }}

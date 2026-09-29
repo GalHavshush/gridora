@@ -20,7 +20,7 @@ export const gradientPresets: BackgroundPreset[] = [
     type: 'gradient',
     tone: 'dark',
     value:
-      'radial-gradient(at 8% 12%, #ff8a5b 0, transparent 42%), radial-gradient(at 92% 8%, #7b5cff 0, transparent 48%), radial-gradient(at 78% 92%, #ff4f8b 0, transparent 44%), radial-gradient(at 12% 96%, #22b8ff 0, transparent 46%), #15122b',
+      'radial-gradient(at 8% 12%, #ff8a5b 0, transparent 42%), radial-gradient(at 92% 8%, #7b5cff 0, transparent 48%), radial-gradient(at 78% 92%, #ff4f8b 0, transparent 44%), radial-gradient(at 12% 96%, #22b8ff 0, transparent 46%), #141416',
   },
   {
     name: 'Dusk',
@@ -58,7 +58,7 @@ export const gradientPresets: BackgroundPreset[] = [
 ]
 
 export const solidPresets: BackgroundPreset[] = [
-  { name: 'Midnight', type: 'solid', tone: 'dark', value: '#15122b' },
+  { name: 'Onyx', type: 'solid', tone: 'dark', value: '#141416' },
   { name: 'Ink', type: 'solid', tone: 'dark', value: '#0b1020' },
   { name: 'Charcoal', type: 'solid', tone: 'dark', value: '#1f1d1b' },
   { name: 'Moss', type: 'solid', tone: 'dark', value: '#243b2f' },

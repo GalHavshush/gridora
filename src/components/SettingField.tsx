@@ -107,7 +107,7 @@ function SelectControl({ setting, value, onChange }: FieldProps<SelectSetting>) 
         onChange={(e) => onChange(e.target.value)}
       >
         {setting.options.map((o) => (
-          <option key={o.value} value={o.value} className="bg-[#1a1726]">
+          <option key={o.value} value={o.value} className="bg-[#18181b]">
             {o.label}
           </option>
         ))}
@@ -124,7 +124,7 @@ function SelectControl({ setting, value, onChange }: FieldProps<SelectSetting>) 
           onClick={() => onChange(o.value)}
           className={cx(
             'flex-1 cursor-pointer rounded-lg px-3 py-1.5 text-sm transition',
-            value === o.value ? 'bg-white text-[#1a1726] shadow' : 'text-white/65 hover:text-white',
+            value === o.value ? 'bg-white text-[#18181b] shadow' : 'text-white/65 hover:text-white',
           )}
         >
           {o.label}

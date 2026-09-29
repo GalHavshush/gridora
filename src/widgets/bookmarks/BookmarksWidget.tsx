@@ -58,7 +58,7 @@ function BookmarkIcon({ title, icon: rawIcon, host }: { title: string; icon?: st
       {emoji ? (
         <span className="text-2xl">{emoji}</span>
       ) : failed ? (
-        <span className="font-display text-lg font-semibold text-[#1a1726]">{title[0]?.toUpperCase()}</span>
+        <span className="font-display text-lg font-semibold text-[#18181b]">{title[0]?.toUpperCase()}</span>
       ) : (
         <img src={customImage ?? faviconFor(host)} alt="" className="size-7 rounded-md" onError={() => setFailed(true)} />
       )}
