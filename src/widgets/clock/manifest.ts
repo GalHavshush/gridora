@@ -28,6 +28,17 @@ export default defineWidget<ClockSettings>({
   minSize: { w: 2, h: 2 },
   settings: [
     {
+      key: 'style',
+      label: 'Style',
+      type: 'select',
+      default: 'digital',
+      options: [
+        { label: 'Digital', value: 'digital' },
+        { label: 'Analog', value: 'analog' },
+        { label: 'Stacked', value: 'stacked' },
+      ],
+    },
+    {
       key: 'format',
       label: 'Time format',
       type: 'select',

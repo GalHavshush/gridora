@@ -6,7 +6,8 @@ import type { WidgetSettings } from '@/widget-sdk'
 import { dashboardStorage } from '@/services/persistence/storage'
 import { defaultBackground, type Background, type CardStyle } from '@/themes/backgrounds'
 import { findFreeSpot } from './layout'
-import { parseSnapshot, type DashboardSnapshot } from './snapshot'
+import { defaultAccent } from '@/themes/appearance'
+import { parseSnapshot, snapshotOf, type DashboardSnapshot } from './snapshot'
 import { defaultWidgets } from './defaultDashboard'
 
 interface DashboardState extends DashboardSnapshot {
@@ -18,6 +19,8 @@ interface DashboardState extends DashboardSnapshot {
   setEditing: (isEditing: boolean) => void
   setBackground: (background: Background) => void
   setCardStyle: (cardStyle: CardStyle) => void
+  setAppearance: (patch: Partial<Pick<DashboardSnapshot, 'cardOpacity' | 'cardBlur' | 'font' | 'accent' | 'wallpaperDim'>>) => void
+  setFrameless: (id: string, frameless: boolean) => void
   importDashboard: (data: unknown) => void
   resetDashboard: () => void
 }
@@ -28,6 +31,11 @@ const defaultSnapshot = (): DashboardSnapshot => ({
   widgets: defaultWidgets().map((w) => ({ ...w, id: createInstanceId(w.type) })),
   background: defaultBackground,
   cardStyle: 'glass',
+  cardOpacity: null,
+  cardBlur: null,
+  font: 'grotesk',
+  accent: defaultAccent,
+  wallpaperDim: 0,
 })
 
 export const useDashboard = create<DashboardState>()(
@@ -68,7 +76,11 @@ export const useDashboard = create<DashboardState>()(
 
       setEditing: (isEditing) => set({ isEditing }),
       setBackground: (background) => set({ background }),
-      setCardStyle: (cardStyle) => set({ cardStyle }),
+      // A new style starts from its own opacity and blur rather than the previous style's.
+      setCardStyle: (cardStyle) => set({ cardStyle, cardOpacity: null, cardBlur: null }),
+      setAppearance: (patch) => set(patch),
+      setFrameless: (id, frameless) =>
+        set((s) => ({ widgets: s.widgets.map((w) => (w.id === id ? { ...w, frameless } : w)) })),
 
       importDashboard: (data) => set(parseSnapshot(data)),
       resetDashboard: () => set(defaultSnapshot()),
@@ -77,7 +89,7 @@ export const useDashboard = create<DashboardState>()(
       name: 'gridora:dashboard',
       version: 1,
       storage: createJSONStorage(() => dashboardStorage),
-      partialize: ({ widgets, background, cardStyle }): DashboardSnapshot => ({ widgets, background, cardStyle }),
+      partialize: (s): DashboardSnapshot => snapshotOf(s),
     },
   ),
 )

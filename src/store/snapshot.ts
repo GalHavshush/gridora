@@ -1,5 +1,6 @@
 import type { WidgetSettings } from '@/widget-sdk'
 import { defaultBackground, type Background, type CardStyle } from '@/themes/backgrounds'
+import { defaultAccent, fonts, type FontId } from '@/themes/appearance'
 import { safeUrl } from '@/lib/url'
 import type { GridPosition } from './layout'
 
@@ -8,6 +9,8 @@ export interface WidgetInstance {
   type: string
   position: GridPosition
   settings: WidgetSettings
+  /** Drop the card surface and draw the widget straight on the background. */
+  frameless?: boolean
 }
 
 /** Everything that describes a dashboard. This is what gets persisted, exported and (later) synced. */
@@ -15,15 +18,29 @@ export interface DashboardSnapshot {
   widgets: WidgetInstance[]
   background: Background
   cardStyle: CardStyle
+  /** Card fill, 0–100. `null` follows the card style's default. */
+  cardOpacity: number | null
+  /** Card blur in px, 0–40. `null` follows the card style's default. */
+  cardBlur: number | null
+  font: FontId
+  accent: string
+  /** Darkens image wallpapers, 0–80. */
+  wallpaperDim: number
 }
 
-export const snapshotOf = ({ widgets, background, cardStyle }: DashboardSnapshot): DashboardSnapshot => ({
-  widgets,
-  background,
-  cardStyle,
+export const snapshotOf = (s: DashboardSnapshot): DashboardSnapshot => ({
+  widgets: s.widgets,
+  background: s.background,
+  cardStyle: s.cardStyle,
+  cardOpacity: s.cardOpacity,
+  cardBlur: s.cardBlur,
+  font: s.font,
+  accent: s.accent,
+  wallpaperDim: s.wallpaperDim,
 })
 
 const isNumber = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
+const inRange = (v: unknown, max: number): v is number => isNumber(v) && v >= 0 && v <= max
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
 /** Validates an imported dashboard file. Throws with a readable message when it isn't one. */
@@ -52,5 +69,14 @@ export function parseSnapshot(data: unknown): DashboardSnapshot {
   const cardStyle = ['glass', 'light', 'dark'].includes(data.cardStyle as string)
     ? (data.cardStyle as CardStyle)
     : 'glass'
-  return { widgets, background: background as Background, cardStyle }
+  return {
+    widgets,
+    background: background as Background,
+    cardStyle,
+    cardOpacity: inRange(data.cardOpacity, 100) ? data.cardOpacity : null,
+    cardBlur: inRange(data.cardBlur, 40) ? data.cardBlur : null,
+    font: fonts.some((f) => f.id === data.font) ? (data.font as FontId) : 'grotesk',
+    accent: typeof data.accent === 'string' && /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : defaultAccent,
+    wallpaperDim: inRange(data.wallpaperDim, 80) ? data.wallpaperDim : 0,
+  }
 }

@@ -12,6 +12,17 @@ export default defineWidget<WeatherSettings>({
   defaultSize: { w: 3, h: 3 },
   minSize: { w: 2, h: 2 },
   settings: [
+    {
+      key: 'style',
+      label: 'Style',
+      type: 'select',
+      default: 'classic',
+      options: [
+        { label: 'Classic', value: 'classic' },
+        { label: 'Minimal', value: 'minimal' },
+        { label: 'Week', value: 'week' },
+      ],
+    },
     { key: 'location', label: 'Location', type: 'text', default: 'London', placeholder: 'City name' },
     {
       key: 'units',

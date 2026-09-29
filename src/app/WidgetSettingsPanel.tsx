@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react'
-import { SettingField } from '@/components/SettingField'
+import { SettingField, Toggle } from '@/components/SettingField'
 import { Sheet } from '@/components/Sheet'
 import { useDashboard } from '@/store/dashboardStore'
 import { getDefaultSettings, getWidget } from '@/widget-sdk/registry'
@@ -9,6 +9,7 @@ export function WidgetSettingsPanel({ instanceId, onClose }: { instanceId: strin
   const instance = useDashboard((s) => s.widgets.find((w) => w.id === instanceId))
   const updateWidgetSettings = useDashboard((s) => s.updateWidgetSettings)
   const removeWidget = useDashboard((s) => s.removeWidget)
+  const setFrameless = useDashboard((s) => s.setFrameless)
   const definition = instance && getWidget(instance.type)
   const settings = { ...getDefaultSettings(definition), ...instance?.settings }
 
@@ -30,6 +31,13 @@ export function WidgetSettingsPanel({ instanceId, onClose }: { instanceId: strin
                 onChange={(value) => updateWidgetSettings(instance.id, { [setting.key]: value })}
               />
             ))}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-sm font-medium text-white/90">Show card</div>
+                <div className="mt-0.5 text-xs text-white/45">Turn off to place the widget straight on the background.</div>
+              </div>
+              <Toggle label="Show card" checked={!instance.frameless} onChange={(v) => setFrameless(instance.id, !v)} />
+            </div>
           </div>
           <button
             onClick={() => {
