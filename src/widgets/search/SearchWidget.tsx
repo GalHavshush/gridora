@@ -32,6 +32,7 @@ export function SearchWidget({ settings, size }: WidgetProps<SearchSettings>) {
     e.preventDefault()
     if (!query.trim()) return
     const url = provider.url + encodeURIComponent(query.trim())
+    setQuery('')
     if (settings.openInNewTab) window.open(url, '_blank', 'noopener')
     else window.location.assign(url)
   }
