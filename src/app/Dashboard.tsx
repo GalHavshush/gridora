@@ -5,6 +5,7 @@ import { Background } from '@/components/Background'
 import { LogoMark } from '@/components/Logo'
 import { Toolbar } from '@/components/Toolbar'
 import { useDashboard } from '@/store/dashboardStore'
+import { appearanceVars } from '@/themes/appearance'
 import { CustomizePanel } from './CustomizePanel'
 import { SettingsPanel } from './SettingsPanel'
 import { WidgetGrid } from './WidgetGrid'
@@ -18,6 +19,10 @@ export function Dashboard() {
   const hasWidgets = useDashboard((s) => s.widgets.length > 0)
   const cardStyle = useDashboard((s) => s.cardStyle)
   const tone = useDashboard((s) => s.background.tone)
+  const cardOpacity = useDashboard((s) => s.cardOpacity)
+  const cardBlur = useDashboard((s) => s.cardBlur)
+  const font = useDashboard((s) => s.font)
+  const accent = useDashboard((s) => s.accent)
   const addWidget = useDashboard((s) => s.addWidget)
   const setEditing = useDashboard((s) => s.setEditing)
 
@@ -42,7 +47,12 @@ export function Dashboard() {
   }
 
   return (
-    <div data-card={cardStyle} data-tone={tone} className="min-h-dvh">
+    <div
+      data-card={cardStyle}
+      data-tone={tone}
+      className="min-h-dvh"
+      style={appearanceVars({ cardStyle, tone, cardOpacity, cardBlur, font, accent })}
+    >
       <Background />
       <Toolbar
         onAddWidget={() => setPanel({ kind: 'picker' })}
@@ -77,7 +87,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <p className="mt-2 max-w-sm text-page-muted">Your web, arranged your way. Start with a clock, your bookmarks or a feed.</p>
       <button
         onClick={onAdd}
-        className="bg-accent-gradient mt-6 flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 font-medium text-[#2a0f1c] shadow-lg shadow-accent/30 transition hover:brightness-105 active:scale-95"
+        className="bg-accent-gradient mt-6 flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 font-medium text-accent-fg shadow-lg shadow-accent/30 transition hover:brightness-105 active:scale-95"
       >
         <Plus className="size-4" strokeWidth={2.5} /> Add your first widget
       </button>

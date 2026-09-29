@@ -5,7 +5,7 @@
   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Bricolage Grotesque', 'Geist', ui-sans-serif, sans-serif;
   --color-accent: #ff7a6b;
-  --color-accent-soft: #ffb86b;
+  --color-accent-fg: #2a0f1c;
   --color-chrome: rgb(19 16 34 / 0.78);
 }
 
@@ -19,7 +19,11 @@
 }
 
 @utility bg-accent-gradient {
-  background-image: linear-gradient(135deg, var(--color-accent-soft), #ff5f8f);
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-accent), #ffe3a8 35%),
+    color-mix(in oklab, var(--color-accent), #ff3f8f 25%)
+  );
 }
 
 @utility chrome-surface {
@@ -35,7 +39,6 @@
   color-scheme: dark;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  --card-blur: 0px;
 }
 
 body {
@@ -45,16 +48,14 @@ body {
 }
 
 [data-card='glass'] {
-  --card-bg: rgb(255 255 255 / 0.1);
+  --card-rgb: 255 255 255;
   --card-fg: #fff;
   --card-muted: rgb(255 255 255 / 0.64);
   --card-subtle: rgb(255 255 255 / 0.09);
   --card-line: rgb(255 255 255 / 0.16);
-  --card-blur: 28px;
   --card-shadow: 0 1px 0 rgb(255 255 255 / 0.12) inset, 0 24px 48px -24px rgb(0 0 0 / 0.5);
 }
 [data-card='glass'][data-tone='light'] {
-  --card-bg: rgb(255 255 255 / 0.5);
   --card-fg: #1a1726;
   --card-muted: rgb(26 23 38 / 0.58);
   --card-subtle: rgb(26 23 38 / 0.06);
@@ -62,7 +63,7 @@ body {
   --card-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 40px -24px rgb(40 30 80 / 0.35);
 }
 [data-card='light'] {
-  --card-bg: rgb(255 255 255 / 0.94);
+  --card-rgb: 255 255 255;
   --card-fg: #1a1726;
   --card-muted: rgb(26 23 38 / 0.56);
   --card-subtle: rgb(26 23 38 / 0.055);
@@ -70,7 +71,7 @@ body {
   --card-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.45);
 }
 [data-card='dark'] {
-  --card-bg: rgb(20 18 32 / 0.9);
+  --card-rgb: 20 18 32;
   --card-fg: #f4f2fb;
   --card-muted: rgb(244 242 251 / 0.56);
   --card-subtle: rgb(255 255 255 / 0.06);
@@ -79,11 +80,28 @@ body {
 }
 
 .widget-card {
-  background: var(--card-bg);
+  /* --card-alpha, --card-blur and --widget-* are set on the dashboard root from the user's appearance choices. */
+  --font-display: var(--widget-display);
+  background: rgb(var(--card-rgb) / var(--card-alpha));
   color: var(--card-fg);
+  font-family: var(--widget-sans);
   border: 1px solid var(--card-line);
   box-shadow: var(--card-shadow);
   backdrop-filter: blur(var(--card-blur)) saturate(170%);
+}
+
+/* A widget drawn straight on the background: no surface, text follows the background tone. */
+.widget-card[data-frameless] {
+  --card-alpha: 0;
+  --card-fg: var(--page-fg);
+  --card-muted: var(--page-muted);
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.28);
+}
+[data-tone='light'] .widget-card[data-frameless] {
+  text-shadow: 0 1px 14px rgb(255 255 255 / 0.5);
 }
 
 /* ---- react-grid-layout ------------------------------------------------ */

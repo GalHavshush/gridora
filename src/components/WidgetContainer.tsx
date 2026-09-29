@@ -43,6 +43,7 @@ export function WidgetContainer({ instance, isEditing, onOpenSettings }: Props) 
     >
       <div
         inert={isEditing}
+        data-frameless={instance.frameless || undefined}
         className={cx(
           'widget-card @container h-full overflow-hidden rounded-[26px] transition-[transform,box-shadow,outline-color] duration-200',
           'outline-2 outline-offset-2 outline-transparent',
@@ -73,11 +74,11 @@ export function WidgetContainer({ instance, isEditing, onOpenSettings }: Props) 
             <EditButton className="-top-2.5 -left-2.5" label={`Remove ${name}`} onClick={() => removeWidget(instance.id)}>
               <Minus className="size-4" strokeWidth={3} />
             </EditButton>
-            {definition?.settings?.length ? (
+            {definition && (
               <EditButton className="-top-2.5 -right-2.5" label={`${name} settings`} onClick={openSettings}>
                 <SlidersHorizontal className="size-3.5" strokeWidth={2.5} />
               </EditButton>
-            ) : null}
+            )}
             <motion.span
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}

@@ -124,7 +124,7 @@ function ToolbarButton({
       className={cx(
         'flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-full text-sm font-medium transition active:scale-95',
         iconOnly ? 'w-9 justify-center' : 'px-3 sm:px-4',
-        variant === 'primary' && 'bg-accent-gradient text-[#2a0f1c] shadow-md shadow-accent/30 hover:brightness-105',
+        variant === 'primary' && 'bg-accent-gradient text-accent-fg shadow-md shadow-accent/30 hover:brightness-105',
         variant === 'active' && 'bg-white text-[#1a1726]',
         variant === 'default' && 'text-white/80 hover:bg-white/10 hover:text-white',
       )}

@@ -25,7 +25,7 @@ export function WidgetPicker({ open, onClose, onAdd }: Props) {
               onClick={() => onAdd(id)}
               className="group flex w-full cursor-pointer items-start gap-4 rounded-2xl border border-white/8 bg-white/[0.035] p-4 text-left transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07]"
             >
-              <span className="bg-accent-gradient grid size-12 shrink-0 place-items-center rounded-2xl text-[#2a0f1c] shadow-lg shadow-accent/20">
+              <span className="bg-accent-gradient grid size-12 shrink-0 place-items-center rounded-2xl text-accent-fg shadow-lg shadow-accent/20">
                 <Icon className="size-6" />
               </span>
               <span className="min-w-0 flex-1">
