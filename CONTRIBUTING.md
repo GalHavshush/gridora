@@ -27,6 +27,8 @@ The README has a complete walkthrough ("Create a widget"). In short:
 
 The registry discovers it automatically.
 
+Widgets that don't need to ship inside Gridora belong in [gridora-widgets](https://github.com/GalHavshush/gridora-widgets). Users install them at runtime from the Marketplace (see "Community widgets" in the README).
+
 A good widget:
 
 - works at its `minSize` and grows gracefully (use `size` or container-query units);
