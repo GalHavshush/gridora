@@ -1,4 +1,5 @@
 import type { WidgetSettings } from '@/widget-sdk'
+import { parseRemoteManifest, type RemoteManifest } from '@/widget-sdk/remote'
 import { defaultBackground, type Background, type CardStyle } from '@/themes/backgrounds'
 import { defaultAccent, fonts, type FontId } from '@/themes/appearance'
 import { safeUrl } from '@/lib/url'
@@ -30,6 +31,8 @@ export interface DashboardSnapshot {
   wallpaperDim: number
   /** Image URLs the user applied as wallpapers, newest first, at most 4. */
   recentWallpapers: string[]
+  /** Widgets installed at runtime from a manifest URL. */
+  installedWidgets: RemoteManifest[]
 }
 
 export const snapshotOf = (s: DashboardSnapshot): DashboardSnapshot => ({
@@ -43,6 +46,7 @@ export const snapshotOf = (s: DashboardSnapshot): DashboardSnapshot => ({
   accent: s.accent,
   wallpaperDim: s.wallpaperDim,
   recentWallpapers: s.recentWallpapers,
+  installedWidgets: s.installedWidgets,
 })
 
 const isNumber = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
@@ -89,5 +93,15 @@ export function parseSnapshot(data: unknown): DashboardSnapshot {
     recentWallpapers: Array.isArray(data.recentWallpapers)
       ? [...new Set(data.recentWallpapers.filter((u): u is string => typeof u === 'string' && Boolean(safeUrl(u))))].slice(0, 4)
       : [],
+    installedWidgets: Array.isArray(data.installedWidgets) ? data.installedWidgets.flatMap(validManifest) : [],
+  }
+}
+
+/** Keeps a stored manifest if it's still valid; its `entry` is already absolute. */
+function validManifest(m: unknown): RemoteManifest[] {
+  try {
+    return [parseRemoteManifest(m, 'https://invalid.invalid/')]
+  } catch {
+    return []
   }
 }

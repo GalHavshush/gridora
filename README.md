@@ -166,6 +166,19 @@ export default defineWidget<CounterSettings>({
 - **Empty and error states:** `WidgetMessage` from `@/widget-sdk` renders a consistent message with an optional action.
 - **No secrets:** Gridora is a static site, and anything you ship is public. Prefer keyless APIs (like Open-Meteo) or let users enter their own keys in settings.
 
+## Community widgets
+
+Widgets can also be installed at runtime, without rebuilding Gridora. **Add widget → Marketplace** lists the widgets in [gridora-widgets](https://github.com/GalHavshush/gridora-widgets). You can also install any widget by pasting its `manifest.json` URL. That repo covers how to write one.
+
+A community widget is a web page listed in a JSON manifest. The manifest carries the same fields as `defineWidget`, with an `entry` URL in place of a component. Gridora renders the page in a sandboxed iframe with no `allow-same-origin`. The page can't read your dashboard, `localStorage` or other widgets, and it only receives its own settings. The two sides talk over `postMessage`:
+
+| Direction      | Message                                                   |
+| -------------- | --------------------------------------------------------- |
+| widget → Gridora | `{ type: 'gridora:ready' }`, `{ type: 'gridora:updateSettings', patch }`, `{ type: 'gridora:openSettings' }` |
+| Gridora → widget | `{ type: 'gridora:state', settings, size, isEditing, theme }`, sent on `ready` and on every change |
+
+Gridora renders the settings drawer from the manifest's `settings` schema, just as it does for built-in widgets. Entries must be `https` URLs; plain `http` is allowed on `localhost` for development. Set `VITE_WIDGET_CATALOG_URL` to point the Marketplace at a different catalog.
+
 ## Built-in widgets
 
 | Widget    | Notes                                                                                    |
@@ -195,7 +208,6 @@ The architecture is built so these can be added without rewriting the frontend, 
 - Multiple dashboard pages
 - Shareable dashboard layouts (export/import is the first step)
 - Integrations: Google Calendar, Gmail, GitHub, Spotify, Notion, Home Assistant
-- A community widget marketplace
 - Dedicated mobile layouts
 
 ## Contributing

@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { Layout } from 'react-grid-layout'
-import { getWidget } from '@/widget-sdk/registry'
+import { getWidget, setRemoteWidgets } from '@/widget-sdk/registry'
+import type { RemoteManifest } from '@/widget-sdk/remote'
 import type { WidgetSettings } from '@/widget-sdk'
 import { dashboardStorage } from '@/services/persistence/storage'
 import { defaultBackground, type Background, type CardStyle } from '@/themes/backgrounds'
@@ -24,6 +25,10 @@ interface DashboardState extends DashboardSnapshot {
   /** Sets an image URL as the wallpaper and remembers it among the recent ones. */
   applyWallpaperUrl: (url: string) => void
   removeRecentWallpaper: (url: string) => void
+  /** Adds or replaces a runtime widget. The manifest must come from `parseRemoteManifest`. */
+  installWidget: (manifest: RemoteManifest) => void
+  /** Removes a runtime widget and every instance of it. */
+  uninstallWidget: (id: string) => void
   importDashboard: (data: unknown) => void
   resetDashboard: () => void
 }
@@ -41,6 +46,7 @@ const defaultSnapshot = (): DashboardSnapshot => ({
   accent: defaultAccent,
   wallpaperDim: 0,
   recentWallpapers: [],
+  installedWidgets: [],
 })
 
 export const useDashboard = create<DashboardState>()(
@@ -93,6 +99,14 @@ export const useDashboard = create<DashboardState>()(
       setFrameless: (id, frameless) =>
         set((s) => ({ widgets: s.widgets.map((w) => (w.id === id ? { ...w, frameless } : w)) })),
 
+      installWidget: (manifest) =>
+        set((s) => ({ installedWidgets: [...s.installedWidgets.filter((m) => m.id !== manifest.id), manifest] })),
+      uninstallWidget: (id) =>
+        set((s) => ({
+          installedWidgets: s.installedWidgets.filter((m) => m.id !== id),
+          widgets: s.widgets.filter((w) => w.type !== id),
+        })),
+
       importDashboard: (data) => set(parseSnapshot(data)),
       resetDashboard: () => set(defaultSnapshot()),
     }),
@@ -104,5 +118,11 @@ export const useDashboard = create<DashboardState>()(
     },
   ),
 )
+
+// Keep the registry in step with the installed runtime widgets (also after hydration and imports).
+setRemoteWidgets(useDashboard.getState().installedWidgets)
+useDashboard.subscribe((s, prev) => {
+  if (s.installedWidgets !== prev.installedWidgets) setRemoteWidgets(s.installedWidgets)
+})
 
 export type { DashboardSnapshot, WidgetInstance } from './snapshot'
